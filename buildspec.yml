@@ -12,6 +12,8 @@ phases:
       - echo Build started on `date`
       - pwd
       - /bin/ls
+      - which aws
+      - aws s3 cp README.md s3://th-dest1
       - aws s3 cp *.yml s3://th-dest1
   post_build:
     commands:
