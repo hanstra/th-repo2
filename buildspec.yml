@@ -16,3 +16,4 @@ phases:
 artifacts:
   files:
     - test1.yml
+  discard-paths: yes
