@@ -10,7 +10,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - aws s3 cp *.yml s3://th-dest1
+      - /usr/local/bin/aws s3 cp test1.yml s3://th-dest1
   post_build:
     commands:
       - echo Build completed on `date`
