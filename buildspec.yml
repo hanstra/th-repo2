@@ -15,4 +15,4 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - *.yml
+    - test1.yml
