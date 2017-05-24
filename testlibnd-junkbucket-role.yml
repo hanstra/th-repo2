@@ -1,13 +1,13 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Role for CodeBuild and CodePipeline"
+Description: "Roles for CI stack"
 
 Outputs:
   RoleName:
-    Description: CodeBuild role for ESU
+    Description: Build role for ESU
     Value:
-      !GetAtt CodeBuildRole.Arn
+      !GetAtt JunkBucketRole.Arn
     Export:
-      Name: !Sub ${AccountAlias}-ESU-CodeBuild
+      Name: !Sub ${AccountAlias}-junkbucket-role
 
 Parameters:
 
@@ -19,7 +19,7 @@ Parameters:
         #aws iam list-account-aliases --query AccountAliases[0] --output text
 
 Resources:
-  CodeBuildRole:
+  JunkBucketRole:
     Type: "AWS::IAM::Role"
     Properties:
       AssumeRolePolicyDocument:
@@ -64,6 +64,6 @@ Resources:
               Action: 
                 "s3:*"
               Resource: 
-                !Sub "arn:aws:s3:::${AccountAlias}-junk/*"
+                !Sub "arn:aws:s3:::th-dest1/*"
               Action: 
                 "s3:*"

@@ -6,6 +6,14 @@ Parameters:
     Type: String
     Description: The OAuth token to use for the repo
 
+  AccountAlias:
+    Type: String
+    Description: The account alias (in all lower case).
+    Default: testlibnd
+    AllowedPattern: '^$|[a-z0-9]{3,63}'
+    #aws iam list-account-aliases --query AccountAliases[0] --output text
+
+
 Resources:
   CopyTemplates:
     Type: AWS::CodeBuild::Project
@@ -15,7 +23,7 @@ Resources:
       Description:
         "Template Sync for ESU repository"
       ServiceRole:
-        !ImportValue testlibnd-ESU-CF
+        !Sub ${AccountAlias}-ESU-CodeBuild
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
@@ -26,7 +34,7 @@ Resources:
       Artifacts:
         Name: codebuild-output
         Type: S3
-        Location: th-source1
+        Location: !Sub ${AccountAlias}-junk
       TimeoutInMinutes: 10
 
 #        !Join [' ',[!ImportValue account-alias, ESU-Template-Sync]]
@@ -73,20 +81,4 @@ Resources:
                   Ref: CopyTemplates
       ArtifactStore:
         Type: S3
-        Location: th-dest1
-
-
-
-#              Name: GithubSource
-#              ActionTypeId:
-#                Category: Source
-#                Owner: ThirdParty
-#                Version: 1
-#                Provider: GitHub
-#              Configuration:
-#                Owner: hanstra
-#                Repo: th-repo2
-#                Branch: master
-#                OAuthToken: !Ref OAuth
-#              OutputArtifacts:
-#                - Name: SourceOutput
+        Location: !Sub ${AccountAlias}-junk
