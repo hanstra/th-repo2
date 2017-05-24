@@ -74,3 +74,19 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: th-dest1
+
+
+
+#              Name: GithubSource
+#              ActionTypeId:
+#                Category: Source
+#                Owner: ThirdParty
+#                Version: 1
+#                Provider: GitHub
+#              Configuration:
+#                Owner: hanstra
+#                Repo: th-repo2
+#                Branch: master
+#                OAuthToken: !Ref OAuth
+#              OutputArtifacts:
+#                - Name: SourceOutput

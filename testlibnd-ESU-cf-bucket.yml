@@ -63,3 +63,7 @@ Resources:
                 !Sub "arn:aws:s3:::${AccountAlias}-cf/*"
               Action: 
                 "s3:*"
+              Resource: 
+                !Sub "arn:aws:s3:::th-dest1/*"
+              Action: 
+                "s3:*"
