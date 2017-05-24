@@ -60,6 +60,6 @@ Resources:
                 - "s3:GetObjectVersion"
               Effect: "Allow"
               Resource: 
-                "arn:aws:s3:::${AccountAlias}-cf/*"
+                !Sub "arn:aws:s3:::${AccountAlias}-cf/*"
               Action: 
                 "s3:*"
