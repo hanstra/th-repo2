@@ -38,22 +38,29 @@ Resources:
         Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/AWS-CodePipeline-Service
       Stages:
         -
-          Name: pre_build
+          Name: Source
           Actions:
             -
-              Name: DoNothing
+              Name: GithubSource
               ActionTypeId:
-                Category: Test
-                Owner: AWS
+                Category: Source
+                Owner: ThirdParty
                 Version: 1
-                Provider: CodeBuild
+                Provider: GitHub
               Configuration:
-                ProjectName:
-                  Ref: CopyTemplates
+                Owner: hanstra
+                Repo: th-repo2
+                Branch: master
+                OAuthToken: !Ref OAuth
+              OutputArtifacts:
+                - Name: SourceOutput
+        -
           Name: Build
           Actions:
             -
               Name: CopyFiles
+              InputArtifacts:
+                - Name: SourceOutput
               ActionTypeId:
                 Category: Build
                 Owner: AWS
