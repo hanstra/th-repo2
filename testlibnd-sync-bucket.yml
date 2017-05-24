@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CodeBuild and CodePipeline for template sync"
+
+
+Resources:
+  BuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: 
+        testlibnd-ESU-Template-Sync
+      Description:
+        "Template Sync for ESU repository"
+      ServiceRole:
+        !ImportValue testlibnd-ESU-CF
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/ubuntu-base:14.04
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 10
+
+#        !Join [' ',[!ImportValue account-alias, ESU-Template-Sync]]
+
+  AppPipeline:
+    Type: "AWS::CodePipeline::Pipeline"
+    Properties:
+      Name: 
+        testlibnd-ESU-Template-Sync
+      RoleArn:
+        Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/AWS-CodePipeline-Service
+      Stages:
+        -
+          Name: Source
+          Actions:
+            -
+              Name: GithubSource
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              Configuration:
+                Owner: hanstra
+                Repo: th-repo2
+                Branch: master
+                OAuthToken: 631459cc492ee030ff69e78b4d66650352ba2cce
+              OutputArtifacts:
+                - Name: SourceOutput
+        -
+          Name: Build
+          Actions:
+            -
+              Name: BuildSource
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuiltProject
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              Configuration:
+                ProjectName:
+                  Ref: BuildProject
+      ArtifactStore:
+        Type: S3
+        Location:
+          th-dest1
+
+
+#                OAuthToken: !Ref OAuth

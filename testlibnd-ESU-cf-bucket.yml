@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Roles for CI stack"
+
+Outputs:
+  RoleName:
+    Description: Build role for ESU
+    Value:
+      !GetAtt BuildServiceRole.Arn
+    Export:
+      Name: !Sub ${AccountAlias}-ESU-CF
+
+Parameters:
+
+    AccountAlias:
+        Type: String
+        Description: The account alias (in all lower case).
+        Default: testlibnd
+        AllowedPattern: '^$|[a-z0-9]{3,63}'
+        #aws iam list-account-aliases --query AccountAliases[0] --output text
+
+Resources:
+  BuildServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "codebuild.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        # View everything
+        - arn:aws:iam::aws:policy/job-function/ViewOnlyAccess
+        # This gives permission to create logs
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Sub ${AccountAlias}-ESU-codebuild
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement: 
+            - 
+              Effect: "Allow"
+              Resource: 
+                - "arn:aws:logs:us-east-1:${AccountID}:log-group:/aws/codebuild/ESU-codebuild"
+                - "arn:aws:logs:us-east-1:${AccountID}:log-group:/aws/codebuild/ESU-codebuild:*"
+              Action: 
+                - "logs:CreateLogGroup" 
+                - "logs:CreateLogStream" 
+                - "logs:PutLogEvents"
+              Effect: "Allow"
+              Resource: 
+                "arn:aws:s3:::codepipeline-us-east-1-*"
+              Action: 
+                - "s3:PutObject"
+                - "s3:GetObject"
+                - "s3:GetObjectVersion"
+              Effect: "Allow"
+              Resource: 
+                "arn:aws:s3:::${AccountAlias}-cf/*"
+              Action: 
+                "s3:*"
