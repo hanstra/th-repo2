@@ -24,7 +24,9 @@ Resources:
         Location: https://github.com/hanstra/th-repo2
         Type: GITHUB
       Artifacts:
-        Type: NO_ARTIFACTS
+        Name: codebuild-output
+        Type: S3
+        Location: th-source1
       TimeoutInMinutes: 10
 
 #        !Join [' ',[!ImportValue account-alias, ESU-Template-Sync]]
