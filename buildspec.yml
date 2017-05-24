@@ -10,7 +10,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - /usr/local/bin/aws s3 sync . s3://th-dest1 --exclude "*" --include "*.yml"
+      - aws s3 sync . s3://th-dest1 --exclude "*" --include "*.yml"
   post_build:
     commands:
       - echo Build completed on `date`
